@@ -11,6 +11,7 @@ import pandas as pd
 """inputs systeem"""  #♦op dit moment handmatig enkele waarden ingegeven, al deze waarden zouden voor een volledig jaar (per kwartier) ingelezen moeten worden van een excell 
 data = pd.read_csv(r"C:\Users\Andreas\KU Leuven\Stijn De Jonge - CORE\Projecten\(3)Lopende projecten\P1123 - S.A.B.I.N.E\P1123_Fase1_Uitvoering\code\overzichtSLPs.csv")
 data.head()
+#test123
 #print(data)
 timeValues = data.iloc[:,0]
 SLPe = data.iloc[:,6]
@@ -525,3 +526,7 @@ payback(cashflow)
 print("de terugverdientijd voor deze investering is:",payback(cashflow)[0],"jaar en",payback(cashflow)[1],"maanden")
 print("De CO2 uitstoot voor deze situatie bedraagt:",nieuwProfiel.get('CO2'),"kg")
 
+
+#%%
+
+#%%
