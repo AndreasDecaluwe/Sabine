@@ -68,7 +68,7 @@ SLPsww =[min_gas]*len(timeValues)
 #print(SLPsww)
 SLPrv = [round(SLPg[i]-SLPsww[i],5) for i in range(len(timeValues))]
 
-profielen = [SLPrv, SLPsww, SLPe]
+#profielen = [SLPrv, SLPsww, SLPe]
 #print(SLPrv)
 
 
@@ -269,9 +269,31 @@ def payback(cashflows):
 huidigProfiel = {}
 huidigProfielSWW = {}
 huidigProfielRV = {}
+
 huidigProfielElec = {}
 
+profielen = [huidigProfielRV,huidigProfielSWW,huidigProfielElec]
+huidigeVoorziening = [huidigeVoorzieningRV,huidigeVoorzieningSWW,huidigeVoorzieningElec]
+SLP = [SLPrv, SLPsww, SLPe]
 
+
+for i in range(len(profielen)): #for loop door de profielen en de huidige voorzieningen, een lijst bij de declaratie van huidige voorzieningen. moet zelfde volgorde hebben
+    profielen[i]["voorziening"] = huidigeVoorziening[i]
+    profielen[i]["verbruikProfiel"] = verbruikProfiel(profielen[i].get('voorziening'),SLP[i])
+    profielen[i]["totaal verbruik"] = sum(profielen[i].get("verbruikProfiel"))
+    profielen[i]["verbruikersverdeling"] = verbruikersSom(profielen[i].get("voorziening"),profielen[i].get("totaal verbruik"))
+    profielen[i]["CO2"] = {}
+    for key, value in profielen[i].get("verbruikersverdeling").items():
+        profielen[i]["CO2"][key] = emissions(key,value)
+    profielen[i]["totaal CO2"] = sum(profielen[i].get("CO2").values())
+    profielen[i]["energievraag"] = energieVraag(profielen[i].get("voorziening"),profielen[i].get("verbruikProfiel"))
+
+
+
+
+
+
+"""
 huidigProfielRV["voorziening"]= huidigeVoorzieningRV
 huidigProfielRV["verbruikProfiel"] = verbruikProfiel(huidigeVoorzieningRV,SLPrv)
 huidigProfielRV["totaal verbruik"] = sum(huidigProfielRV.get("verbruikProfiel"))
@@ -282,7 +304,7 @@ for key, value in huidigProfielRV.get("verbruikersverdeling").items():
 #huidigProfielRV["CO2"] = CO2
 huidigProfielRV["totaal CO2"] = sum(huidigProfielRV.get("CO2").values())
 huidigProfielRV["energievraag"] = energieVraag(huidigProfielRV.get("voorziening"),huidigProfielRV.get("verbruikProfiel"))
-
+print(huidigProfielRV.get('totaal verbruik'))
 huidigProfielSWW["voorziening"]= huidigeVoorzieningSWW
 huidigProfielSWW["verbruikProfiel"] = verbruikProfiel(huidigeVoorzieningSWW,SLPsww)
 huidigProfielSWW["totaal verbruik"] = sum(huidigProfielSWW.get("verbruikProfiel"))
@@ -301,7 +323,7 @@ for key, value in huidigProfielElec.get("verbruikersverdeling").items():
     huidigProfielElec["CO2"][key] = emissions(key,value)
 huidigProfielElec["totaal CO2"] = sum(huidigProfielElec.get("CO2").values())
 huidigProfielElec["energievraag"] = energieVraag(huidigProfielElec.get("voorziening"),huidigProfielElec.get("verbruikProfiel"))
-
+"""
 
 
 huidigProfiel["Sanitair warm water"] = huidigProfielSWW
@@ -336,7 +358,7 @@ maxVraagSWW = max(huidigProfielSWW.get("verbruikProfiel"))/1000
 
 
 """nieuwe energievoorzieningen RUIMTEVERWARMING bepalen"""
-nieuwVoorzieningenRV = [heatPump_LW_4_6]
+
 #for i in range(len(list_voorzieningenRV)):
 #    if list_voorzieningenRV[i] == warmtepomp_LW:
 #        for j in range(len(list_voorzieningenRV[i])):
@@ -353,12 +375,10 @@ nieuwVoorzieningenRV = [heatPump_LW_4_6]
 #print(nieuwVoorzieningenRV)
   
 
-
-nieuwVoorzieningenSWW =  [doorstroomboiler_5]
-
-
-nieuwVoorzieningenElec = [electriciteit_net]
-
+nieuwVoorzieningRV = heatPump_LW_4_6
+nieuwVoorzieningSWW =  doorstroomboiler_5
+nieuwVoorzieningElec = electriciteit_net
+neiuweVoorzieningen = [nieuwVoorzieningRV,nieuwVoorzieningSWW,nieuwVoorzieningElec]
 
 
 
@@ -370,8 +390,8 @@ nieuwProfiel = {}
 nieuwProfielRV = {}
 nieuwProfielSWW = {}
 nieuwProfielElec = {}
-
-
+nieuweProfielen = [nieuwProfielRV,nieuwProfielSWW,nieuwProfielElec]
+nieuweVoorzieningen = []
 """ vergelijking tussen huidig en nieuw profiel"""
 #print("")
 #print("HUIDIG PROFIEL RUIMTEVERWARMING")
@@ -502,10 +522,11 @@ nieuwProfiel['CO2'] = nieuwProfielRV.get('totaal CO2') + nieuwProfielSWW.get('to
 #vergelijking["kostbesparing"]
 #vergelijking["CO2 besparing"]
 
-print("##########################################")
+#print("##########################################")
 #print(huidigProfiel)
 
 """WEERGAVE"""
+
 print("huidige situatie voor energievoorziening is als volgt:")
 print("Voorziening voor ruimteverwarming:",huidigProfiel.get('Ruimteverwarming').get('voorziening').get('naam'))
 print("Voorziening voor sanitair warm water:",huidigProfiel.get('Sanitair warm water').get('voorziening').get('naam'))
