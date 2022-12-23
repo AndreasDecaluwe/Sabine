@@ -7,7 +7,7 @@ Created on Wed Dec 14 13:33:23 2022
 """
 
 """imports"""
-
+"""aanpassing"""
 import pandas as pd
 import os
 print(os.getcwd())
