@@ -19,11 +19,11 @@ data = pd.read_csv(os.path.join(path, "overzichtSLPs.csv"))
 
 
 data.head()
-#print(data)
+#print(data)  
 timeValues = data.iloc[:,0]
-SLPe = data.iloc[:,6]
-SLPg = data.iloc[:,8]
-COP = data.iloc[:,9]
+SLPe = data.iloc[:,6] #profiel van de VREG
+SLPg = data.iloc[:,8] #profiel van de VREG
+COP = data.iloc[:,9].tolist() #nu is er de mogelijkheid om de COP variabel te maken, op dit moment nog steeds een constante waarde in de csv 
 elecEff = data.iloc[:,10]
 PV_opbrengst = data.iloc[:,11].tolist()
 #print(PV_opbrengst)
@@ -32,16 +32,17 @@ PV_opbrengst = data.iloc[:,11].tolist()
 #print(len(timeValues))
 #print(SLPe)
 #print(SLPg)
-PV = False 
+PV = False
 
 
 
 
 """lijst voorzieningen"""
 toepassingen = ["Ruimteverwarming", "Sanitair Warm Water","Elektriciteit"]
-list_voorzieningen = []
+
+list_voorzieningen = []  #moet ingelezen worden van een csv file 
 heatPump_LW_3_3 = {"naam":"Lucht-water Warmtepomp","Toepassing":"Ruimteverwarming","verbruiker": "elektriciteit","efficientie":4.8,"maxVermogen":3.3,"prijs":5289}
-heatPump_LW_4_6 = {"naam":"Lucht-water Warmtepomp","Toepassing":"Ruimteverwarming","verbruiker": "elektriciteit","efficientie":4,"maxVermogen":4.6,"prijs":6370}
+heatPump_LW_4_6 = {"naam":"Lucht-water Warmtepomp","Toepassing":"Ruimteverwarming","verbruiker": "elektriciteit","efficientie":COP,"maxVermogen":4.6,"prijs":6370}
 heatPump_LW_8_5 = {"naam":"Lucht-water Warmtepomp","Toepassing":"Ruimteverwarming","verbruiker": "elektriciteit","efficientie":8.5,"maxVermogen":8.5,"prijs":9385}
 condensketel_30 = {"naam":"condensatiesketel","Toepassing":"Ruimteverwarming","verbruiker": "aardgas","efficientie":0.96,"maxVermogen":30}
 doorstroomboiler_5 = {"naam":"elektrische doorstroomboiler","Toepassing":"sanitair warm water","verbruiker": "elektriciteit","efficientie":1,"maxVermogen":5,"prijs":500}
@@ -60,14 +61,14 @@ scenario2 = [{"ruimteverwarming":"warmtepomp","sanitair warm water":"doorstroomb
 scenario3 = [{"ruimteverwarming":"warmtepomp","sanitair warm water":"doorstroomboiler elektrisch","electriciteit":"het net"}]
 scenario4 = [{"ruimteverwarming":"warmtepomp","sanitair warm water":"doorstroomboiler gas","electriciteit":"het net"}]
 
-"""vraagprofielen definieren"""
+"""vraagprofielen definieren""" #de SLPs voor ruimteverwarming, sanitair genereren op basis van het SLPg van de VREG
 #het onderscheid maken tussen de profielen voor ruimteverwarming, sanitair ww en electriciteit
-min_gas = min(SLPg)
+min_gas = min(SLPg)  #minimum van het gasprofiel = waarde voor sanitair ww 
 #print(min_gas)
-SLPsww =[min_gas]*len(timeValues)
+SLPsww =[min_gas]*len(timeValues)  #SLP voor sanitair ww genereren, de constante waarde (min van gasprofiel) voor elk kwartier. To dp: variatie in het profiel brengen, is meer realistisch dan altijd eenzelfde waarde
 #print(SLPsww)
-SLPrv = [round(SLPg[i]-SLPsww[i],5) for i in range(len(timeValues))]
-
+SLPrv = [round(SLPg[i]-SLPsww[i],5) for i in range(len(timeValues))]  #SLP voor ruimteverwarming genereren door de waarde voor SWW af te trekken van het totaal profiel voor gas
+print(sum(SLPsww))
 profielen = [SLPrv, SLPsww, SLPe]
 #print(SLPrv)
 
@@ -79,7 +80,7 @@ huidigeVoorzieningSWW = cvKetel_gas_25
 huidigeVoorzieningRV = cvKetel_gas_25
 huidigeVoorzieningElec = electriciteit_net
 
-"""huidige energieverbruik"""
+"""huidige energieverbruik""" #dit moet een input worden van de gebruiker
 Jaarverbruik_stookolie = 0 #kWh
 Jaarverbruik_gas = 20000 #kWh
 Jaarverbruik_elec = 3500 #kWh
@@ -88,7 +89,7 @@ Jaarverbruik_elec = 3500 #kWh
 
 """INPUTS VAN DE GEBRUIKER VERWERKEN"""
 """huidig verbruik verdelen over verbruikprofiel -> verbruikprofiel genereren"""
-def verbruikProfiel(voorziening, profiel):  #functie vermenigvuldigt elk verbruik per kwartier met de overeenkomstige percentage van het totaal jaarverbruik 
+def verbruikProfiel(voorziening, profiel):  #functie vermenigvuldigt elk percentage per kwartier van de slpo met het overeenkomstige  totaal jaarverbruik 
     if voorziening.get("verbruiker") =="elektriciteit":
             jaarverbruik = Jaarverbruik_elec
             verbruikersVraag = [round(i*jaarverbruik,3) for i in profiel]        
@@ -102,7 +103,7 @@ def verbruikProfiel(voorziening, profiel):  #functie vermenigvuldigt elk verbrui
     return verbruikersVraag
 
 
-def verbruikersSom(voorziening, som): #functie verdeelt het verbruik over alle gedefinieerde verbruikers, maakt het vergelijken voor besparingen achteraf gemakkelijker
+def verbruikersSom(voorziening, som): #functie verdeelt het verbruik over alle gedefinieerde verbruikers (gas, stookolie, elec), maakt het vergelijken voor besparingen achteraf gemakkelijker
     verbruikers = {"aardgas":0.0,"stookolie":0.0,"elektriciteit":0.0}
     if voorziening.get("verbruiker") =="elektriciteit":
         verbruikers["elektriciteit"] = verbruikers.get("elektriciteit") + som
@@ -121,7 +122,7 @@ co2_elec = 0.220 #kg/kWh
 co2_stookolie = 0.271 #kg/kWh
 
 
-def emissions(verbruiker, verbruik):  #returns kg co2/kwh
+def emissions(verbruiker, verbruik):  #returns kg co2/kwh voor een bepaalde verbruiker
     if verbruiker == "elektriciteit":
             co2 = round(verbruik * co2_elec,3)
     elif verbruiker == "aardgas":
@@ -131,11 +132,9 @@ def emissions(verbruiker, verbruik):  #returns kg co2/kwh
 #    print(co2)
     return co2
 
-#uitstoot = []
-#for i in range (len(voorzieningen)):   #gaat door de lijst van huidige voorzieningen, moet uiteindelijke helemaal onderaan komen eigenlijk
-#    uitstoot.append(emissions(voorzieningen[i],verbruik[i]))
 
-"""energievraag bepalen"""
+
+"""energievraag bepalen""" #energievraag of nuttige energie bepalen op basis van huidige efficientie
 
 def energieVraag(huidigeVoorziening,huidigVraagProfiel):
     if type (huidigeVoorziening.get("efficientie")) == list: #if functie is nodig om te bepalen of de efficientie tijdsafhankelijke is of niet, tijdsafhankelijk staat in een list, niet-afhankelijk is gwn een integer
@@ -144,7 +143,7 @@ def energieVraag(huidigeVoorziening,huidigVraagProfiel):
         vraag = [i*huidigeVoorziening.get("efficientie") for i in huidigVraagProfiel]
     return vraag
 
-"""nieuw verbruik bepalen"""
+"""nieuw verbruik bepalen""" #nieuw verbruik voor nieuwe situatie
 
 def newConsumption(vraagprofiel,nieuweVoorziening):   #op basis van de energievraag en een nieuwe efficientie het nieuwe verbruik berekenen
     if type (nieuweVoorziening.get("efficientie")) == list:  #voorbeeld een variable COP staat in een tijdafhankelijke lijst geschreven, elk verbruik
@@ -153,13 +152,13 @@ def newConsumption(vraagprofiel,nieuweVoorziening):   #op basis van de energievr
         newCons = [round(i/nieuweVoorziening.get("efficientie"),3) for i in vraagprofiel]
     return newCons
 
-def newConsumptionPV(verbruikprofiel, PV_opbrengst):
+def newConsumptionPV(verbruikprofiel, PV_opbrengst):  #PV opbrengst aftrekken van huidig verbruik voor electriciteit, per kwartier
     newCons = [None]*len(verbruikprofiel)
     for i in range(len(verbruikprofiel)):
         newCons[i] = (round(verbruikprofiel[i] - PV_opbrengst[i],3)) 
     return newCons
 
-def verbruikvergelijking(dict1, dict2):
+def verbruikvergelijking(dict1, dict2):  #2 dictionaries van verbruikers vergelijken met elkaar, gebruikt om nieuw verbruik te vergelijken met huidig verbruik. Geeft duidelijk weer waar er een besparing is en waar een extra/nieuw verbruik is
     besparingsdict= {"aardgas":0.0,"stookolie":0.0,"elektriciteit":0.0}
     besparingsdict['aardgas'] = round(dict1.get("aardgas") - dict2.get("aardgas"),3)
     besparingsdict['elektriciteit'] = round(dict1.get("elektriciteit") - dict2.get("elektriciteit"),3)
@@ -169,8 +168,8 @@ def verbruikvergelijking(dict1, dict2):
 """FINANCIEEL"""
 
 #https://code.activestate.com/recipes/576686-npv-irr-payback-analysis/
-
-costElec = 0.5 #€/kWh
+#momenteel een vaste waarde per kWh, dit variabel maken is mogelijk maar dan moeten we ook per kwartier een lijst inlezen, en aanpassen in de functies dat het elk overeenkomstig kwartier moet vermenigvuldigen 
+costElec = 0.5 #€/kWh   
 costAardgas = 0.4 #€/kWh
 costStookolie = 0.3 #€/kWh
 
@@ -207,13 +206,13 @@ def usageCostItem(key,value):
     return cost
 
 
-def cashflows(oudverbruik, nieuwverbruik,investering):
+def cashflows(oudverbruik, nieuwverbruik,investering):  #de cashflow per jaar berekenen, periode is het aantal jaar. Eerste waarde is het jaar 0 = de investering
     print("###berekening cashflows###")
     periode = 10 #jaar
     cashflow = [None]*periode
-    developmentVerbruik = 0.03
-    developmentCost = 0.05
-    kostHuidig = usageCostTotal(oudverbruik)
+    developmentVerbruik = 0.03  #elk jaar 3% meer verbruik dan het jaar voordien
+    developmentCost = 0.05 #elk jaar stijgt de prijs met 5%
+    kostHuidig = usageCostTotal(oudverbruik) #♣initieel verbruikskost berekenen van huidige situatie, deze wordt dan geupdate met de percentuele stijging hierboven
     kostNieuw = usageCostTotal(nieuwverbruik)
     onderhoud = 100 #jaarlijkse kost onderhoud
     cashflow[0] = -1*investering
@@ -227,7 +226,7 @@ def cashflows(oudverbruik, nieuwverbruik,investering):
     return cashflow
         
 
-def payback_of_investment(investment, cashflows):
+def payback_of_investment(investment, cashflows): #payback periode berekenen op basis van investering en cashflow per jaar
     print("###terugverdientijd berekenen###")
     """The payback period refers to the length of time required 
        for an investment to have its initial cost recovered.
@@ -251,7 +250,7 @@ def payback_of_investment(investment, cashflows):
 #    print(A,"years and",months,"months")
     return A,months
 
-def payback(cashflows):
+def payback(cashflows): #functie om de payback periode op te roepen
     """The payback period refers to the length of time required
        for an investment to have its initial cost recovered.
        
@@ -329,14 +328,8 @@ maxVraagSWW = max(huidigProfielSWW.get("verbruikProfiel"))/1000
 #print(maxVraagSWW)
 #print("max warmte",maxVraagRV)
 
-
-
-
-
-
-
 """nieuwe energievoorzieningen RUIMTEVERWARMING bepalen"""
-nieuwVoorzieningenRV = [heatPump_LW_4_6]
+
 #for i in range(len(list_voorzieningenRV)):
 #    if list_voorzieningenRV[i] == warmtepomp_LW:
 #        for j in range(len(list_voorzieningenRV[i])):
@@ -351,19 +344,10 @@ nieuwVoorzieningenRV = [heatPump_LW_4_6]
 #                nieuwVoorzieningenRV.append(list_voorzieningenRV[i][j])
 #dit aanvullen met alle soorten die we uiteindelijk aan hebben - GW, LW WW         
 #print(nieuwVoorzieningenRV)
-  
 
-
+nieuwVoorzieningenRV = [heatPump_LW_4_6]
 nieuwVoorzieningenSWW =  [doorstroomboiler_5]
-
-
 nieuwVoorzieningenElec = [electriciteit_net]
-
-
-
-
-
-
 
 """ dictionary van nieuw verbruiksprofiel maken"""
 nieuwProfiel = {}   
@@ -406,6 +390,7 @@ for i in range((len(nieuwVoorzieningenRV))):
 #print("")
 #print("NIEUW PROFIEL SANITAIR WARM WATER")
 #print("")
+    
 for i in range((len(nieuwVoorzieningenSWW))):
     nieuwProfielSWW["voorziening"]= nieuwVoorzieningenSWW[i]
     nieuwProfielSWW["verbruikProfiel"] = newConsumption(huidigProfielSWW.get("energievraag"),nieuwProfielSWW.get("voorziening"))
@@ -466,7 +451,7 @@ for i,j in nieuwProfielRV.get("verbruikersverdeling").items():
                 nieuwProfiel['totaal verbruik'][i] = round(j+l+n,3)
                 nieuwProfiel['totale verbruikskost'][i]= usageCostItem(i,j+l+n)
             
-if huidigProfielRV.get('voorziening') != nieuwProfielRV.get('voorziening'):
+if huidigProfielRV.get('voorziening') != nieuwProfielRV.get('voorziening'):  #checken of huidige voorziening gelijk is aan de nieuwe, als dit zo is is er geen nieuw installatie --> dus ook geen investering. dit herhaalt voor elke toepassing, kan in een for loop geschreven worden
     nieuwProfiel['investering RV'] = nieuwProfielRV.get('voorziening').get('prijs')
 else:
     nieuwProfiel['investering RV'] = 0
@@ -479,22 +464,15 @@ if huidigProfielElec.get('voorziening') != nieuwProfielElec.get('voorziening'):
 else:
     nieuwProfiel['investering Elec'] = 0
     
-nieuwProfiel['totale investering'] = nieuwProfiel.get('investering RV') + nieuwProfiel.get('investering SWW') + nieuwProfiel.get('investering Elec')  
+nieuwProfiel['totale investering'] = nieuwProfiel.get('investering RV') + nieuwProfiel.get('investering SWW') + nieuwProfiel.get('investering Elec')  #som van de investeringen voor elke toepassing
     
-#for i,j in nieuwProfielRV.get("CO2").items():
-#    for k,l in nieuwProfielSWW.get("CO2").items():
-#        for m,n in nieuwProfielElec.get('CO2').items():
-#            if i == k == m:
-#                nieuwProfiel['CO2'] = j+l+n
 nieuwProfiel['CO2'] = nieuwProfielRV.get('totaal CO2') + nieuwProfielSWW.get('totaal CO2') + nieuwProfielElec.get('totaal CO2')
 #print("###########################################################")
 #print(nieuwProfiel)
          
-#cashflow = cashflows(huidigProfiel.get('totaal verbruik'),nieuwProfiel.get('totaal verbruik'),nieuwProfiel.get('totale investering'))
-#payback(cashflow)
-#print("test")
-#print(nieuwProfiel)
-"""vergelijking huidig profiel en nieuw profiel"""
+
+
+"""vergelijking huidig profiel en nieuw profiel""" #probeersel om de vergelijking duidelijker te maken, de vollegie dict van huidig en nieuw profiel vgl met elkaar ipv dit ook op te splitsen in RV, SWW en elec 
 #vergelijking = {}
 #vergelijking["verbruiksbesparing RV"] = 
 #vergelijking["verbruiksbesparing SWW"] = 
@@ -530,6 +508,8 @@ for key, value in nieuwProfiel.get('totaal verbruik').items():
 print("dit vertaalt zich in de volgende verbruikskost per jaar")
 for key, value in nieuwProfiel.get('totale verbruikskost').items():
     print(key,":",value,"€")
+    
+#oproepen cashflow moet hieronder komen te staan, anders flipt er iets in de code en wordt het verbruik opnieuw berekend
 cashflow = cashflows(huidigProfiel.get('totaal verbruik'),nieuwProfiel.get('totaal verbruik'),nieuwProfiel.get('totale investering'))  #deze moet hier staan, als deze hoger in de code staat dan flipt er iets
 paybackPeriod = payback(cashflow)
 print("de terugverdientijd voor deze investering is:",paybackPeriod[0],"jaar en",paybackPeriod[1],"maanden")
