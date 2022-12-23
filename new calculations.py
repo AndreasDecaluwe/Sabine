@@ -9,9 +9,15 @@ Created on Wed Dec 14 13:33:23 2022
 """imports"""
 
 import pandas as pd
-
+import os
+print(os.getcwd())
 """inputs systeem"""  #♦op dit moment handmatig enkele waarden ingegeven, al deze waarden zouden voor een volledig jaar (per kwartier) ingelezen moeten worden van een excell 
-data = pd.read_csv(r"Z:\Andreas\Documents\GitHub\Sabine\overzichtSLPs.csv")
+path = os.getcwd()
+pathcsv = os.path.join(path, "overzichtSLPs.csv")
+print(pathcsv)
+data = pd.read_csv(os.path.join(path, "overzichtSLPs.csv"))
+
+
 data.head()
 #print(data)
 timeValues = data.iloc[:,0]
@@ -389,7 +395,7 @@ for i in range((len(nieuwVoorzieningenRV))):
     nieuwProfielRV["totaal CO2"] = sum(nieuwProfielRV.get("CO2").values())
     nieuwProfielRV["Besparing CO2"] = round(huidigProfielRV.get("totaal CO2") - nieuwProfielRV.get("totaal CO2"),3)
 #    print("----------------------------------------")
-    print(nieuwProfielRV)
+#    print(nieuwProfielRV)
 
 #print("")
 #print("HUIDIG PROFIEL SANITAIR WARM WATER")
