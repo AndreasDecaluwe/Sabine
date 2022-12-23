@@ -33,6 +33,7 @@ PV_opbrengst = data.iloc[:,11].tolist()
 #print(SLPe)
 #print(SLPg)
 PV = False
+PV_cost = 0
 
 
 
@@ -92,13 +93,13 @@ Jaarverbruik_elec = 3500 #kWh
 def verbruikProfiel(voorziening, profiel):  #functie vermenigvuldigt elk percentage per kwartier van de slpo met het overeenkomstige  totaal jaarverbruik 
     if voorziening.get("verbruiker") =="elektriciteit":
             jaarverbruik = Jaarverbruik_elec
-            verbruikersVraag = [round(i*jaarverbruik,3) for i in profiel]        
+            verbruikersVraag = [i*jaarverbruik for i in profiel]        
     elif voorziening.get("verbruiker") =="aardgas":
             jaarverbruik = Jaarverbruik_gas
-            verbruikersVraag = [round(i*jaarverbruik,3) for i in profiel]           
+            verbruikersVraag = [i*jaarverbruik for i in profiel]           
     elif voorziening.get("verbruiker") =="stookolie":
             jaarverbruik = Jaarverbruik_stookolie
-            verbruikersVraag = [round(i*jaarverbruik,3) for i in profiel]
+            verbruikersVraag = [i*jaarverbruik for i in profiel]
 #    print(verbruikersVraag)
     return verbruikersVraag
 
@@ -147,9 +148,9 @@ def energieVraag(huidigeVoorziening,huidigVraagProfiel):
 
 def newConsumption(vraagprofiel,nieuweVoorziening):   #op basis van de energievraag en een nieuwe efficientie het nieuwe verbruik berekenen
     if type (nieuweVoorziening.get("efficientie")) == list:  #voorbeeld een variable COP staat in een tijdafhankelijke lijst geschreven, elk verbruik
-        newCons = [round(a/b,3) for a,b in zip(vraagprofiel,nieuweVoorziening.get("efficientie"))]
+        newCons = [a/b for a,b in zip(vraagprofiel,nieuweVoorziening.get("efficientie"))]
     else:  #als we een constante COP gebruiken
-        newCons = [round(i/nieuweVoorziening.get("efficientie"),3) for i in vraagprofiel]
+        newCons = [i/nieuweVoorziening.get("efficientie") for i in vraagprofiel]
     return newCons
 
 def newConsumptionPV(verbruikprofiel, PV_opbrengst):  #PV opbrengst aftrekken van huidig verbruik voor electriciteit, per kwartier
@@ -173,7 +174,9 @@ costElec = 0.5 #€/kWh
 costAardgas = 0.4 #€/kWh
 costStookolie = 0.3 #€/kWh
 
-def usageCostYear(voorziening, verbruik):  #returns verbruikskost per jaar
+#returns verbruikskost per jaar afhahnkelijk van welke verbruiker
+#input is een dict van een voorziening {'naam':'...','toepassing':'...',...} en een Integer voor verbruik
+def usageCostYear(voorziening, verbruik):  
     verbruiker = voorziening.get('verbruiker')
     cost = 0
     if verbruiker == "elektriciteit":
@@ -184,7 +187,9 @@ def usageCostYear(voorziening, verbruik):  #returns verbruikskost per jaar
             cost = verbruik * costStookolie
     return cost
 
-def usageCostTotal(verbruik):
+#returns verbruikskost per jaar afhahnkelijk van welke verbruiker 
+#input is een dictionary {'verbruiker':IntVerbruik}
+def usageCostTotal(verbruik): 
     cost = 0
     for key, val in verbruik.items():
             if key == "elektriciteit":
@@ -194,7 +199,8 @@ def usageCostTotal(verbruik):
             elif key == "stookolie":
                 cost += val * costStookolie
     return cost
-
+#returns verbruikskost per jaar afhahnkelijk van welke verbruiker 
+#input is een item van een dictionary over verbruik
 def usageCostItem(key,value):
     cost = 0
     if key == "elektriciteit":
@@ -265,61 +271,43 @@ def payback(cashflows): #functie om de payback periode op te roepen
 
 
 """dictionary van huidig verbruiksprofiel maken"""
+
 huidigProfiel = {}
-huidigProfielSWW = {}
 huidigProfielRV = {}
+huidigProfielSWW = {}
 huidigProfielElec = {}
 
-
-huidigProfielRV["voorziening"]= huidigeVoorzieningRV
-huidigProfielRV["verbruikProfiel"] = verbruikProfiel(huidigeVoorzieningRV,SLPrv)
-huidigProfielRV["totaal verbruik"] = sum(huidigProfielRV.get("verbruikProfiel"))
-huidigProfielRV["verbruikersverdeling"] = verbruikersSom(huidigProfielRV.get("voorziening"),huidigProfielRV.get("totaal verbruik"))
-huidigProfielRV["CO2"] = {}
-for key, value in huidigProfielRV.get("verbruikersverdeling").items():
-    huidigProfielRV["CO2"][key] = emissions(key,value)
-#huidigProfielRV["CO2"] = CO2
-huidigProfielRV["totaal CO2"] = sum(huidigProfielRV.get("CO2").values())
-huidigProfielRV["energievraag"] = energieVraag(huidigProfielRV.get("voorziening"),huidigProfielRV.get("verbruikProfiel"))
-
-huidigProfielSWW["voorziening"]= huidigeVoorzieningSWW
-huidigProfielSWW["verbruikProfiel"] = verbruikProfiel(huidigeVoorzieningSWW,SLPsww)
-huidigProfielSWW["totaal verbruik"] = sum(huidigProfielSWW.get("verbruikProfiel"))
-huidigProfielSWW["verbruikersverdeling"] = verbruikersSom(huidigProfielSWW.get("voorziening"),huidigProfielSWW.get("totaal verbruik"))
-huidigProfielSWW["CO2"] = {}
-for key, value in huidigProfielSWW.get("verbruikersverdeling").items():
-    huidigProfielSWW["CO2"][key] = emissions(key,value)
-huidigProfielSWW["totaal CO2"] = sum(huidigProfielSWW.get("CO2").values())
-huidigProfielSWW["energievraag"] = energieVraag(huidigProfielSWW.get("voorziening"),huidigProfielSWW.get("verbruikProfiel"))
-huidigProfielElec["voorziening"]= huidigeVoorzieningElec
-huidigProfielElec["verbruikProfiel"] = verbruikProfiel(huidigeVoorzieningElec,SLPe)
-huidigProfielElec["totaal verbruik"] = sum(huidigProfielElec.get("verbruikProfiel"))
-huidigProfielElec["verbruikersverdeling"] = verbruikersSom(huidigProfielElec.get("voorziening"),huidigProfielElec.get("totaal verbruik"))
-huidigProfielElec["CO2"] = {}
-for key, value in huidigProfielElec.get("verbruikersverdeling").items():
-    huidigProfielElec["CO2"][key] = emissions(key,value)
-huidigProfielElec["totaal CO2"] = sum(huidigProfielElec.get("CO2").values())
-huidigProfielElec["energievraag"] = energieVraag(huidigProfielElec.get("voorziening"),huidigProfielElec.get("verbruikProfiel"))
+huidigeProfielen = [huidigProfielRV,huidigProfielSWW,huidigProfielElec]
+huidigeVoorziening = [huidigeVoorzieningRV,huidigeVoorzieningSWW,huidigeVoorzieningElec]
+SLP = [SLPrv, SLPsww, SLPe]
 
 
+for i in range(len(huidigeProfielen)): #for loop door de profielen en de huidige voorzieningen, een lijst bij de declaratie van huidige voorzieningen. moet zelfde volgorde hebben
+    huidigeProfielen[i]["voorziening"] = huidigeVoorziening[i]   #dict van huidige voorziening ingeven
+    huidigeProfielen[i]["verbruikProfiel"] = verbruikProfiel(huidigeProfielen[i].get('voorziening'),SLP[i])  #totaal jaarverbruik verdelen over overeenkomstige SLP 
+    huidigeProfielen[i]["totaal verbruik"] = sum(huidigeProfielen[i].get("verbruikProfiel")) #som van het profiel verdeeld over SLP, bedoelt als check
+    huidigeProfielen[i]["verbruikersverdeling"] = verbruikersSom(huidigeProfielen[i].get("voorziening"),huidigeProfielen[i].get("totaal verbruik"))  #het verbruik verdelen over de soorten verbruikers (gas, stookoli, elec) maakt het vgl achteraf makkelijker
+    huidigeProfielen[i]["CO2"] = {} 
+    for key, value in huidigeProfielen[i].get("verbruikersverdeling").items():  #CO2 per verbruiker berekenen
+        huidigeProfielen[i]["CO2"][key] = emissions(key,value)
+    huidigeProfielen[i]["totaal CO2"] = sum(huidigeProfielen[i].get("CO2").values())  #☻totaal CO2, som van uitstoot van alle verbruikers
+    huidigeProfielen[i]["energievraag"] = energieVraag(huidigeProfielen[i].get("voorziening"),huidigeProfielen[i].get("verbruikProfiel"))  #energievraag op basis van het verbruik en de huidige efficientie bepalen
 
-huidigProfiel["Sanitair warm water"] = huidigProfielSWW
-huidigProfiel["Ruimteverwarming"] = huidigProfielRV
-huidigProfiel["Electriciteit"] = huidigProfielElec
+
+huidigProfiel["Ruimteverwarming"] = huidigProfielRV.get('voorziening').get('naam')
+huidigProfiel["Sanitair warm water"] = huidigProfielSWW.get('voorziening').get('naam')
+huidigProfiel["Electriciteit"] = huidigProfielElec.get('voorziening').get('naam')
 huidigProfiel["totaal verbruik"] = {}
 huidigProfiel["totale verbruikskost"] = {}
 for i,j in huidigProfielRV.get("verbruikersverdeling").items():
     for k,l in huidigProfielSWW.get("verbruikersverdeling").items():
         for m,n in huidigProfielElec.get('verbruikersverdeling').items():
             if i == k == m:
-                huidigProfiel['totaal verbruik'][i] = round(j+l+n,3)
-                huidigProfiel['totale verbruikskost'][i]= usageCostItem(i,j+l+n)        
+                huidigProfiel['totaal verbruik'][i] = j+l+n #totaal verbruik per verbruiker (gas, stookolie, elec)
+                huidigProfiel['totale verbruikskost'][i]= usageCostItem(i,j+l+n) #totaal kost per verbruiker (gas, stookolie, elec)       
 huidigProfiel['CO2'] = huidigProfielRV.get('totaal CO2') + huidigProfielSWW.get('totaal CO2') + huidigProfielElec.get('totaal CO2')
                 
-#print("")
-#print("############################################################")                
-#print(huidigProfiel)
-#print("###################################")        
+       
         
 """Nieuwe voorzieningen bepalen & dimensioneren"""
 """dimensionering van de vraag"""
@@ -345,112 +333,44 @@ maxVraagSWW = max(huidigProfielSWW.get("verbruikProfiel"))/1000
 #dit aanvullen met alle soorten die we uiteindelijk aan hebben - GW, LW WW         
 #print(nieuwVoorzieningenRV)
 
-nieuwVoorzieningenRV = [heatPump_LW_4_6]
-nieuwVoorzieningenSWW =  [doorstroomboiler_5]
-nieuwVoorzieningenElec = [electriciteit_net]
-
+nieuwVoorzieningRV = heatPump_LW_4_6
+nieuwVoorzieningSWW =  doorstroomboiler_5
+nieuwVoorzieningElec = electriciteit_net
+nieuweVoorzieningen = [nieuwVoorzieningRV,nieuwVoorzieningSWW,nieuwVoorzieningElec]
 """ dictionary van nieuw verbruiksprofiel maken"""
 nieuwProfiel = {}   
 nieuwProfielRV = {}
 nieuwProfielSWW = {}
 nieuwProfielElec = {}
+nieuweProfielen = [nieuwProfielRV,nieuwProfielSWW,nieuwProfielElec]
 
+for i in range(len(nieuweProfielen)):
+    nieuweProfielen[i]["voorziening"] = nieuweVoorzieningen[i]
+    nieuweProfielen[i]["verbruikProfiel"] = newConsumption(huidigeProfielen[i].get("energievraag"),nieuweProfielen[i].get("voorziening"))
+    nieuweProfielen[i]["totaal verbruik"] = sum(nieuweProfielen[i].get("verbruikProfiel"))
+    nieuweProfielen[i]["verbruikersverdeling"] = verbruikersSom(nieuweProfielen[i].get("voorziening"),nieuweProfielen[i].get("totaal verbruik"))
+    nieuweProfielen[i]["besparing verbruik"] = verbruikvergelijking(huidigeProfielen[i].get("verbruikersverdeling"),nieuweProfielen[i].get("verbruikersverdeling"))
+    nieuweProfielen[i]["CO2"] = {}
+    for key, value in nieuweProfielen[i].get("verbruikersverdeling").items():
+        nieuweProfielen[i]["CO2"][key] = emissions(key,value)
+    nieuweProfielen[i]["totaal CO2"] = sum(nieuweProfielen[i].get("CO2").values())
+    nieuweProfielen[i]["Besparing CO2"] = round(huidigeProfielen[i].get("totaal CO2") - nieuweProfielen[i].get("totaal CO2"),3)
 
-""" vergelijking tussen huidig en nieuw profiel"""
-#print("")
-#print("HUIDIG PROFIEL RUIMTEVERWARMING")
-#print("")
-#
-#print(huidigProfielRV)
-#
-#print("")
-#print("NIEUW PROFIEL RUIMTEVERWARMING")
-#print("")
-
-for i in range((len(nieuwVoorzieningenRV))):
-    nieuwProfielRV["voorziening"]= nieuwVoorzieningenRV[i]
-    nieuwProfielRV["verbruikProfiel"] = newConsumption(huidigProfielRV.get("energievraag"),nieuwProfielRV.get("voorziening"))
-    nieuwProfielRV["totaal verbruik"] = sum(nieuwProfielRV.get("verbruikProfiel"))
-    nieuwProfielRV["verbruikersverdeling"] = verbruikersSom(nieuwProfielRV.get("voorziening"),nieuwProfielRV.get("totaal verbruik"))
-    nieuwProfielRV["besparing verbruik"] = verbruikvergelijking(huidigProfielRV.get("verbruikersverdeling"),nieuwProfielRV.get("verbruikersverdeling"))
-    nieuwProfielRV["CO2"] = {}
-    for key, value in nieuwProfielRV.get("verbruikersverdeling").items():
-        nieuwProfielRV["CO2"][key] = emissions(key,value)
-    nieuwProfielRV["totaal CO2"] = sum(nieuwProfielRV.get("CO2").values())
-    nieuwProfielRV["Besparing CO2"] = round(huidigProfielRV.get("totaal CO2") - nieuwProfielRV.get("totaal CO2"),3)
-#    print("----------------------------------------")
-#    print(nieuwProfielRV)
-
-#print("")
-#print("HUIDIG PROFIEL SANITAIR WARM WATER")
-#print("")
-#
-#print(huidigProfielSWW)
-#
-#print("")
-#print("NIEUW PROFIEL SANITAIR WARM WATER")
-#print("")
-    
-for i in range((len(nieuwVoorzieningenSWW))):
-    nieuwProfielSWW["voorziening"]= nieuwVoorzieningenSWW[i]
-    nieuwProfielSWW["verbruikProfiel"] = newConsumption(huidigProfielSWW.get("energievraag"),nieuwProfielSWW.get("voorziening"))
-    nieuwProfielSWW["totaal verbruik"] = round(sum(nieuwProfielSWW.get("verbruikProfiel")),3)
-    nieuwProfielSWW["verbruikersverdeling"] = verbruikersSom(nieuwProfielSWW.get("voorziening"),nieuwProfielSWW.get("totaal verbruik"))
-    nieuwProfielSWW["besparing verbruik"] = verbruikvergelijking(huidigProfielSWW.get("verbruikersverdeling"),nieuwProfielSWW.get("verbruikersverdeling"))
-    nieuwProfielSWW["CO2"] = {}
-    for key, value in nieuwProfielSWW.get("verbruikersverdeling").items():
-        nieuwProfielSWW["CO2"][key] = emissions(key,value)
-    nieuwProfielSWW["totaal CO2"] = sum(nieuwProfielSWW.get("CO2").values())
-    nieuwProfielSWW["Besparing CO2"] = round(huidigProfielSWW.get("totaal CO2") - nieuwProfielSWW.get("totaal CO2"),3)
-
-#    print("----------------------------------------")
-#    print(nieuwProfielSWW)
-
-#print("")
-#print("HUIDIG PROFIEL ELEKTRICITEIT")
-#print("")
-#
-#print(huidigProfielElec)
-#
-#print("")
-#print("NIEUW PROFIEL ELEKTRICITEIT")
-#print("")
-for i in range((len(nieuwVoorzieningenElec))):
-    nieuwProfielElec["voorziening"]= nieuwVoorzieningenElec[i]
-    if PV == False:
-        nieuwProfielElec["verbruikProfiel"] = newConsumption(huidigProfielElec.get("energievraag"),nieuwProfielElec.get("voorziening")) #[round(a+b+c,3) for a,b,c in zip(huidigProfielElec.get('verbruikProfiel'),nieuwProfielRV.get('verbruikProfiel'),nieuwProfielSWW.get('verbruikProfiel'))]#newConsumption(huidigProfielElec.get("energievraag"),nieuwProfielElec.get("voorziening"))
-    else:
-        verProf = newConsumption(huidigProfielElec.get("energievraag"),nieuwProfielElec.get("voorziening"))
-        nieuwProfielElec["verbruikProfiel"] = newConsumptionPV(verProf,PV_opbrengst)
-    nieuwProfielElec["totaal verbruik"] = round(sum(nieuwProfielElec.get("verbruikProfiel")),3)
-    nieuwProfielElec["verbruikersverdeling"] = verbruikersSom(nieuwProfielElec.get("voorziening"),nieuwProfielElec.get("totaal verbruik"))
-    
-        
-    nieuwProfielElec["besparing verbruik"] = verbruikvergelijking(huidigProfielElec.get("verbruikersverdeling"),nieuwProfielElec.get("verbruikersverdeling"))
-    nieuwProfielElec["CO2"] = {}
-    for key, value in nieuwProfielElec.get("verbruikersverdeling").items():
-        nieuwProfielElec["CO2"][key] = emissions(key,value)
-    nieuwProfielElec["totaal CO2"] = sum(nieuwProfielElec.get("CO2").values())
-    nieuwProfielElec["Besparing CO2"] = round(huidigProfielElec.get("totaal CO2") - nieuwProfielElec.get("totaal CO2"),3)
-
-#    print("----------------------------------------")
-#    print(nieuwProfielElec)
-
-
-"""NIEUW PROFIEL IN EEN DICTIONARY GIETEN"""
-
-nieuwProfiel["Ruimteverwarming"] = nieuwProfielRV
-nieuwProfiel["Sanitair warm water"] = nieuwProfielSWW
-nieuwProfiel["Electriciteit"] = nieuwProfielElec
+nieuwProfiel["Ruimteverwarming"] = nieuwProfielRV.get('voorziening').get('naam')
+nieuwProfiel["Sanitair warm water"] = nieuwProfielSWW.get('voorziening').get('naam')
+nieuwProfiel["Electriciteit"] = nieuwProfielElec.get('voorziening').get('naam')
 nieuwProfiel["totaal verbruik"] = {}
 nieuwProfiel["totale verbruikskost"] = {}
 for i,j in nieuwProfielRV.get("verbruikersverdeling").items():
     for k,l in nieuwProfielSWW.get("verbruikersverdeling").items():
         for m,n in nieuwProfielElec.get('verbruikersverdeling').items():
             if i == k == m:
-                nieuwProfiel['totaal verbruik'][i] = round(j+l+n,3)
+                nieuwProfiel['totaal verbruik'][i] = j+l+n
                 nieuwProfiel['totale verbruikskost'][i]= usageCostItem(i,j+l+n)
-            
+if PV == True:
+    newConsumptionPV(nieuwProfiel.get('totaal verbruik').get('electriciteit'),PV_opbrengst)
+    PV_cost = 0
+                
 if huidigProfielRV.get('voorziening') != nieuwProfielRV.get('voorziening'):  #checken of huidige voorziening gelijk is aan de nieuwe, als dit zo is is er geen nieuw installatie --> dus ook geen investering. dit herhaalt voor elke toepassing, kan in een for loop geschreven worden
     nieuwProfiel['investering RV'] = nieuwProfielRV.get('voorziening').get('prijs')
 else:
@@ -464,30 +384,32 @@ if huidigProfielElec.get('voorziening') != nieuwProfielElec.get('voorziening'):
 else:
     nieuwProfiel['investering Elec'] = 0
     
-nieuwProfiel['totale investering'] = nieuwProfiel.get('investering RV') + nieuwProfiel.get('investering SWW') + nieuwProfiel.get('investering Elec')  #som van de investeringen voor elke toepassing
+nieuwProfiel['totale investering'] = nieuwProfiel.get('investering RV') + nieuwProfiel.get('investering SWW') + nieuwProfiel.get('investering Elec') + PV_cost  #som van de investeringen voor elke toepassing
     
 nieuwProfiel['CO2'] = nieuwProfielRV.get('totaal CO2') + nieuwProfielSWW.get('totaal CO2') + nieuwProfielElec.get('totaal CO2')
-#print("###########################################################")
-#print(nieuwProfiel)
-         
+
+print("##########################################")
+
+print(huidigProfiel)
+print("##########################################")
+print(nieuwProfiel)
+print("##########################################")
+        
 
 
 """vergelijking huidig profiel en nieuw profiel""" #probeersel om de vergelijking duidelijker te maken, de vollegie dict van huidig en nieuw profiel vgl met elkaar ipv dit ook op te splitsen in RV, SWW en elec 
-#vergelijking = {}
-#vergelijking["verbruiksbesparing RV"] = 
-#vergelijking["verbruiksbesparing SWW"] = 
-#vergelijking["verbruiksbesparing Elec"] = 
-#vergelijking["kostbesparing"]
-#vergelijking["CO2 besparing"]
+vergelijking = {}
+vergelijking["besparing verbruik"] = verbruikvergelijking(huidigProfiel.get('totaal verbruik'),nieuwProfiel.get('totaal verbruik'))
+vergelijking["kostbesparing"] =verbruikvergelijking(huidigProfiel.get('totale verbruikskost'),nieuwProfiel.get('totale verbruikskost'))
+vergelijking["CO2 besparing"] = round(huidigProfiel.get('CO2') - nieuwProfiel.get('CO2'),3)
+print(vergelijking)
 
-print("##########################################")
-#print(huidigProfiel)
+"""
 
-"""WEERGAVE"""
 print("huidige situatie voor energievoorziening is als volgt:")
-print("Voorziening voor ruimteverwarming:",huidigProfiel.get('Ruimteverwarming').get('voorziening').get('naam'))
-print("Voorziening voor sanitair warm water:",huidigProfiel.get('Sanitair warm water').get('voorziening').get('naam'))
-print("Voorziening voor elektriciteit:",huidigProfiel.get('Electriciteit').get('voorziening').get('naam'))
+print("Voorziening voor ruimteverwarming:",huidigProfiel.get('Ruimteverwarming'))
+print("Voorziening voor sanitair warm water:",huidigProfiel.get('Sanitair warm water'))
+print("Voorziening voor elektriciteit:",huidigProfiel.get('Electriciteit'))
 print("het verbruikprofiel per jaar ziet er uit als volgt")
 for key,value in huidigProfiel.get('totaal verbruik').items():
     print(key,":",value,"kWh")
@@ -499,9 +421,9 @@ for key, value in huidigProfiel.get('totale verbruikskost').items():
 print("De CO2 uitstoot voor deze situatie bedraagt:",huidigProfiel.get('CO2'),"kg")
 print("-------------------------------------------------------")
 print("een mogelijke nieuwe situatie voor energievoorziening is als volgt:")
-print("Voorziening voor ruimteverwarming:",nieuwProfiel.get('Ruimteverwarming').get('voorziening').get('naam'))
-print("Voorziening voor sanitair warm water:",nieuwProfiel.get('Sanitair warm water').get('voorziening').get('naam'))
-print("Voorziening voor elektriciteit:",nieuwProfiel.get('Electriciteit').get('voorziening').get('naam'))
+print("Voorziening voor ruimteverwarming:",nieuwProfiel.get('Ruimteverwarming'))
+print("Voorziening voor sanitair warm water:",nieuwProfiel.get('Sanitair warm water'))
+print("Voorziening voor elektriciteit:",nieuwProfiel.get('Electriciteit'))
 print("het verbruikprofiel per jaar ziet er uit als volgt")
 for key, value in nieuwProfiel.get('totaal verbruik').items():
     print(key,":",value,"kWh")
@@ -515,5 +437,5 @@ paybackPeriod = payback(cashflow)
 print("de terugverdientijd voor deze investering is:",paybackPeriod[0],"jaar en",paybackPeriod[1],"maanden")
 print("De CO2 uitstoot voor deze situatie bedraagt:",nieuwProfiel.get('CO2'),"kg")
 
-
+"""
 
