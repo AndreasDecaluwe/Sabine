@@ -23,6 +23,7 @@ data = pd.read_csv(os.path.join(path, "overzichtSLPs.csv"))
 data.head()
 #print(data)  
 timeValues = data.iloc[:,0]
+pointCount = [i for i in range(len(timeValues))]  #aantal punten in timevalues tellen (35000+), nodig voor de plots 
 SLPe = data.iloc[:,6] #profiel van de VREG
 SLPg = data.iloc[:,8] #profiel van de VREG
 COP = data.iloc[:,9].tolist() #nu is er de mogelijkheid om de COP variabel te maken, op dit moment nog steeds een constante waarde in de csv 
@@ -497,7 +498,10 @@ vergelijking["CO2 besparing"] = round(huidigProfiel.get('CO2') - nieuwProfiel.ge
 print(vergelijking)
 
 """plotting"""
-#y = SLPg #huidigProfielRV.get("verbruikProfiel")
-#x = timeValues
-#plt.plot(x,y)
-#plt.show()
+y1 = huidigProfielRV.get("verbruikProfiel")
+y2 = nieuwProfielRV.get("verbruikProfiel")
+x = pointCount #aantal punten in de timevalue list want printen met de timevalues gaat niet 
+
+plt.plot(x,y1)
+plt.plot(x,y2, color = 'red')
+plt.show()
