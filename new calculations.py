@@ -19,7 +19,7 @@ pathcsv = os.path.join(path, "overzichtSLPs.csv")
 # print(pathcsv)
 data = pd.read_csv(os.path.join(path, "overzichtSLPs.csv"))
 data.head()
-#print(data)
+# print(data)
 
 # ALLE INGELEZEN DATA HIERONDER   
 timeValues = data.iloc[:,0]
@@ -35,8 +35,7 @@ PV_opbrengst = data.iloc[:,11].tolist()  #eerste PV opbrengst, op dit moment voo
 #print(len(timeValues))
 #print(SLPe)
 #print(SLPg)
-PV = False
-PV_cost = 0
+
 
 
 
@@ -44,22 +43,33 @@ PV_cost = 0
 '''
 HIERONDER EEN LIJST VAN VOORZIENGEN EN DE INGEGEVEN DATA
 '''
-toepassingen = ["Ruimteverwarming", "Sanitair Warm Water","Elektriciteit"]
+toepassingen = ["Ruimteverwarming", "Sanitair Warm Water","electriciteit"]
+
+#INPUTVOORZIENINGEN
+cvKetel_gas_25 = {"naam":"Gasketel","Toepassing":"Ruimteverwarming","verbruiker": "aardgas","efficientie":0.9,"maxVermogen":30}
+cvKetel_stookolie_25 = {"naam":"Gasketel","Toepassing":"Ruimteverwarming","verbruiker": "stookolie","efficientie":0.9,"maxVermogen":30}
+electriciteit_net = {"naam":"Electriciteitsnet","Toepassing":"electriciteit","verbruiker": "electriciteit","efficientie":1}
 
 ###VOORZIENINGEN
 #warmtepompen
-heatPump_LW_3_3 = {"naam":"lucht-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "elektriciteit","efficientie":4.8,"maxVermogen":3.3,"prijs":5289}
-heatPump_LW_4_6 = {"naam":"Lucht-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "elektriciteit","efficientie":4.8,"maxVermogen":4.6,"prijs":6370}
-heatPump_LW_8_5 = {"naam":"lucht-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "elektriciteit","efficientie":8.5,"maxVermogen":8.5,"prijs":9385}
-heatPump_LW_10_25 = {"naam":"lucht-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "elektriciteit","efficientie":4.54,"maxVermogen":10.25,"prijs":7798}
+heatPump_LW_3 = {"naam":"lucht-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "electriciteit","efficientie":4.8,"maxVermogen":3,"prijs":5289}
+heatPump_LW_5 = {"naam":"Lucht-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "electriciteit","efficientie":4.8,"maxVermogen":5,"prijs":6370}
+heatPump_LW_8 = {"naam":"lucht-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "electriciteit","efficientie":4.5,"maxVermogen":8,"prijs":9385}
+heatPump_LW_10 = {"naam":"lucht-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "electriciteit","efficientie":4.54,"maxVermogen":10,"prijs":7798}
 
-heatPump_GW_3 = {"naam":"bodem-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "elektriciteit","efficientie":3.73,"maxVermogen":3,"prijs":3800}
-heatPump_GW_5 = {"naam":"bodem-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "elektriciteit","efficientie":4.23,"maxVermogen":5,"prijs":7900}
-heatPump_GW_8 = {"naam":"bodem-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "elektriciteit","efficientie":4.4,"maxVermogen":8,"prijs":8300}
-heatPump_GW_10 = {"naam":"bodem-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "elektriciteit","efficientie":4.5,"maxVermogen":15,"prijs":9000}
+heatPump_GW_3 = {"naam":"bodem-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "electriciteit","efficientie":3.73,"maxVermogen":3,"prijs":3800}
+heatPump_GW_5 = {"naam":"bodem-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "electriciteit","efficientie":4.23,"maxVermogen":5,"prijs":7900}
+heatPump_GW_8 = {"naam":"bodem-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "electriciteit","efficientie":4.4,"maxVermogen":8,"prijs":8300}
+heatPump_GW_10 = {"naam":"bodem-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "electriciteit","efficientie":4.5,"maxVermogen":15,"prijs":9000}
+
+heatPump_WW_3 = {"naam":"water-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "electriciteit","efficientie":4.7,"maxVermogen":3,"prijs":9000}
+heatPump_WW_5 = {"naam":"water-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "electriciteit","efficientie":4.7,"maxVermogen":5,"prijs":9300}
+heatPump_WW_8 = {"naam":"water-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "electriciteit","efficientie":4.8,"maxVermogen":8,"prijs":9500}
+heatPump_WW_10 = {"naam":"water-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "electriciteit","efficientie":4.9,"maxVermogen":10,"prijs":10000}
+heatPump_WW_15 = {"naam":"water-water Warmtepomp","Toepassing":"ruimteverwarming","verbruiker": "electriciteit","efficientie":5.3,"maxVermogen":15,"prijs":11000}
 
 
-doorstroomboiler_5 = {"naam":"doorstroomboiler","Toepassing":"sanitair warm water","verbruiker": "elektriciteit","efficientie":1,"maxVermogen":5,"prijs":500}
+doorstroomboiler_5 = {"naam":"doorstroomboiler","Toepassing":"sanitair warm water","verbruiker": "electriciteit","efficientie":1,"maxVermogen":5,"prijs":500}
 
 condensketel_13 = {"naam":"condensatieketel","Toepassing":"Ruimteverwarming","verbruiker": "aardgas","efficientie":0.96,"maxVermogen":13,"prijs":1835}
 condensketel_20 = {"naam":"condensatieketel","Toepassing":"Ruimteverwarming","verbruiker": "aardgas","efficientie":0.96,"maxVermogen":20,"prijs":2038}
@@ -74,19 +84,20 @@ zonneboiler_150 = {"naam":"zonneboiler","Toepassing":"sanitair warm water","verb
 zonneboiler_250 = {"naam":"zonneboiler","Toepassing":"sanitair warm water","verbruiker": "zonne-energie","efficientie":1,"inhoud":250,"gezinsgrootte":5,"prijs":3000}
 zonneboiler_350 = {"naam":"zonneboiler","Toepassing":"sanitair warm water","verbruiker": "zonne-energie","efficientie":1,"inhoud":350,"gezinsgrootte":7,"prijs":3500}
 
-warmtepompboiler_LW_150 = {"naam":"lucht-water warmtepompboiler","Toepassing":"sanitair warm water","verbruiker": "elektriciteit","efficientie":2.5,"inhoud":150,"prijs":2294}
-warmtepompboiler_LW_200 = {"naam":"lucht-water warmtepompboiler","Toepassing":"sanitair warm water","verbruiker": "elektriciteit","efficientie":3.19,"inhoud":200,"prijs":2790}
-warmtepompboiler_LW_270 = {"naam":"lucht-water warmtepompboiler","Toepassing":"sanitair warm water","verbruiker": "elektriciteit","efficientie":3.19,"inhoud":270,"prijs":2906}
+warmtepompboiler_LW_150 = {"naam":"lucht-water warmtepompboiler","Toepassing":"sanitair warm water","verbruiker": "electriciteit","efficientie":2.5,"inhoud":150,"prijs":2294}
+warmtepompboiler_LW_200 = {"naam":"lucht-water warmtepompboiler","Toepassing":"sanitair warm water","verbruiker": "electriciteit","efficientie":3.19,"inhoud":200,"prijs":2790}
+warmtepompboiler_LW_270 = {"naam":"lucht-water warmtepompboiler","Toepassing":"sanitair warm water","verbruiker": "electriciteit","efficientie":3.19,"inhoud":270,"prijs":2906}
 
-elektrischeDoorstroomboiler_5 = {"naam":"doorstroomboiler","Toepassing":"sanitair warm water","verbruiker": "elektriciteit","continue verbruik (kWh)":0.225,"inhoud":5,"efficientie":1,"maxVermogen":2,"prijs":200}
-elektrischeDoorstroomboiler_10 = {"naam":"doorstroomboiler","Toepassing":"sanitair warm water","verbruiker": "elektriciteit","continue verbruik (kWh)":0.273,"inhoud":10,"efficientie":1,"maxVermogen":2,"prijs":280}
+elektrischeDoorstroomboiler_5 = {"naam":"doorstroomboiler","Toepassing":"sanitair warm water","verbruiker": "electriciteit","continue verbruik (kWh)":0.225,"inhoud":5,"efficientie":1,"maxVermogen":2,"prijs":200}
+elektrischeDoorstroomboiler_10 = {"naam":"doorstroomboiler","Toepassing":"sanitair warm water","verbruiker": "electriciteit","continue verbruik (kWh)":0.273,"inhoud":10,"efficientie":1,"maxVermogen":2,"prijs":280}
 
 
 ###LIJSTEN VAN VOORZIENINGEN
 warmtepomp_RVenSWW = []
-warmtepomp_LW = [heatPump_LW_3_3,heatPump_LW_4_6,heatPump_LW_8_5,heatPump_LW_10_25]
-warmtepomp_GW = []
-warmtepomp_LL = []
+warmtepomp_LW = [heatPump_LW_3,heatPump_LW_5,heatPump_LW_8,heatPump_LW_10]
+warmtepomp_GW = [heatPump_GW_3,heatPump_GW_5,heatPump_GW_8,heatPump_GW_10]
+warmtepomp_WW = [heatPump_WW_3,heatPump_WW_5,heatPump_WW_8,heatPump_WW_10,heatPump_WW_15]
+
 condensatieketels = [condensketel_13, condensketel_20,condensketel_30,condensketel_50,condensketel_80,condensketel_100]
 doorstroomboilersE = [elektrischeDoorstroomboiler_5,elektrischeDoorstroomboiler_10]
 zonneboilers = [zonneboiler_150,zonneboiler_250,zonneboiler_350]
@@ -94,9 +105,10 @@ warmtepompboiler = [warmtepompboiler_LW_150,warmtepompboiler_LW_200,warmtepompbo
 
 list_voorzieningenRV = [warmtepomp_LW,condensatieketels]
 
-cvKetel_gas_25 = {"naam":"Gasketel","Toepassing":"Ruimteverwarming","verbruiker": "aardgas","efficientie":0.9,"maxVermogen":30}
 
-electriciteit_net = {"naam":"Electriciteitsnet","Toepassing":"electriciteit","verbruiker": "elektriciteit","efficientie":1}
+
+
+
 
 
 
@@ -106,34 +118,119 @@ hier komt een lijst van dictionaries die een scenario voorstellen, voor elke voo
 '''
 
 #SCENARIOS
-scenario1 = {"scenario":"scenario 1", "ruimteverwarming":"warmtepomp_LW","sanitair warm water":"doorstroomboiler elektrisch","electriciteit":"electriciteitsnet","PV":False}
-scenario2 = {"scenario":"scenario 2","ruimteverwarming":"warmtepomp_LW","sanitair warm water":"doorstroomboiler elektrisch","electriciteit":"electriciteitsnet","PV":False}
-scenario3 = {"scenario":"scenario 3","ruimteverwarming":"warmtepomp_LW","sanitair warm water":"doorstroomboiler gas","electriciteit":"electriciteitsnet","PV":False}
-scenario4 = {"scenario":"scenario 4","ruimteverwarming":"warmtepomp_LW","sanitair warm water":"warmtepomp","electriciteit":"electriciteitsnet","PV":False}
-scenario5 = {"scenario":"scenario 5","ruimteverwarming":"condensatieketel","sanitair warm water":"condensatieketel","electriciteit":"electriciteitsnet","PV":False}
-scenarios = [scenario1,scenario5]
+scenario1 = {"scenario":"scenario 1", "ruimteverwarming":"warmtepomp LW","sanitair warm water":"doorstroomboiler elektrisch","electriciteit":"electriciteitsnet","PV":False}
+scenario2 = {"scenario":"scenario 2", "ruimteverwarming":"warmtepomp GW","sanitair warm water":"doorstroomboiler elektrisch","electriciteit":"electriciteitsnet","PV":False}
+scenario3 = {"scenario":"scenario 3", "ruimteverwarming":"warmtepomp WW","sanitair warm water":"doorstroomboiler elektrisch","electriciteit":"electriciteitsnet","PV":False}
+scenario4 = {"scenario":"scenario 4","ruimteverwarming":"warmtepomp LW","sanitair warm water":"doorstroomboiler elektrisch","electriciteit":"electriciteitsnet","PV":False}
+scenario5 = {"scenario":"scenario 5","ruimteverwarming":"warmtepomp LW","sanitair warm water":"doorstroomboiler gas","electriciteit":"electriciteitsnet","PV":False}
+scenario6 = {"scenario":"scenario 6","ruimteverwarming":"warmtepomp LW","sanitair warm water":"warmtepomp LW","electriciteit":"electriciteitsnet","PV":True}
+scenario7 = {"scenario":"scenario 7","ruimteverwarming":"condensatieketel","sanitair warm water":"condensatieketel","electriciteit":"electriciteitsnet","PV":False}
+scenarios = [scenario1,scenario2,scenario3,scenario4,scenario6,scenario7]
+
+"""
+DIMENSIONERING VAN NIEUWE VOORZIENINGEN
+"""
+def dimensionering(voorziening,vraag):  #input is welke soort voorziening in dit scenario gebruik worden
+    newvoorziening = {}
+    if voorziening  == "warmtepomp LW":
+        if vraag <= 3:  
+            newvoorziening = warmtepomp_LW[0]
+        elif vraag > 3 and vraag <= 5:
+            newvoorziening = warmtepomp_LW[1]
+        elif vraag > 5 and vraag <= 8:
+            newvoorziening = warmtepomp_LW[2]
+        elif vraag > 8:
+             newvoorziening = warmtepomp_LW[3]
+        else:
+            print("LW vermogen not in range")
+
+    elif voorziening  == "warmtepomp GW":
+        if vraag <= 3:  
+            newvoorziening = warmtepomp_GW[0]
+        elif vraag > 3 and vraag <= 5:
+            newvoorziening = warmtepomp_GW[1]
+        elif vraag > 5 and vraag <= 8:
+            newvoorziening = warmtepomp_GW[2]
+        elif vraag > 8:
+            newvoorziening = warmtepomp_GW[3]
+        else:
+            print("GW vermogen not in range")
 
 
+    elif voorziening  == "warmtepomp WW":
+        if vraag <= 3:  
+            newvoorziening = warmtepomp_WW[0]
+        elif vraag > 3 and vraag <= 5:
+            newvoorziening = warmtepomp_WW[1]
+        elif vraag > 5 and vraag <= 8:
+            newvoorziening = warmtepomp_WW[2]
+        elif vraag > 8 and vraag <= 10:
+            newvoorziening = warmtepomp_WW[3]
+        elif vraag > 10:
+            newvoorziening = warmtepomp_WW[4]
+        else:
+            print("WW vermogen not in range")
 
-"""vraagprofielen definieren""" #de SLPs voor ruimteverwarming, sanitair genereren op basis van het SLPg van de VREG
+    elif voorziening  == "condensatieketel":
+        if vraag <= 13:
+            newvoorziening = condensatieketels[0]
+        elif vraag > 13 and vraag <= 20:
+            newvoorziening = condensatieketels[1]
+        elif vraag > 20 and vraag <= 30:
+            newvoorziening = condensatieketels[2]
+        elif vraag > 30 and vraag <= 50:
+            newvoorziening = condensatieketels[3]
+        elif vraag > 50 and vraag <= 80:
+            newvoorziening = condensatieketels[4]
+        elif vraag > 80:
+            newvoorziening = condensatieketels[5]
+        else:
+            print("condensatieketel dimensionering mislukt")
+    
+    elif voorziening  == "doorstroomboiler elektrisch":
+        if vraag <= 5:
+            newvoorziening = doorstroomboilersE[0]
+        elif vraag > 5:
+            newvoorziening = doorstroomboilersE[1]
+        else:
+            print("doorstroomboiler dimensionering mislukt")
+
+    elif voorziening == "electriciteitsnet":
+        newvoorziening = electriciteit_net
+    
+    elif voorziening == "zonneboiler":
+        print("zonneboiler dimensionering mislukt")
+        
+
+
+    return newvoorziening
+
+
+"""
+PERCENTUELE VRAAGPROFIELEN GENEREREN
+""" 
+#de SLPs voor ruimteverwarming, sanitair genereren op basis van het SLPg van de VREG
 #het onderscheid maken tussen de profielen voor ruimteverwarming, sanitair ww en electriciteit
 min_gas = min(SLPg)  #minimum van het gasprofiel = waarde voor sanitair ww 
-#print(min_gas)
+# print("minimaal gas sww",min_gas)
 SLPsww =[min_gas]*len(timeValues)  #SLP voor sanitair ww genereren, de constante waarde (min van gasprofiel) voor elk kwartier. To dp: variatie in het profiel brengen, is meer realistisch dan altijd eenzelfde waarde
 #print(SLPsww)
-SLPrv = [round(SLPg[i]-SLPsww[i],5) for i in range(len(timeValues))]  #SLP voor ruimteverwarming genereren door de waarde voor SWW af te trekken van het totaal profiel voor gas
+SLPrv = [SLPg[i]-SLPsww[i] for i in range(len(timeValues))]  #SLP voor ruimteverwarming genereren door de waarde voor SWW af te trekken van het totaal profiel voor gas
 # print(sum(SLPsww))
 profielen = [SLPrv, SLPsww, SLPe]
 #print(SLPrv)
+# print(sum(SLPrv)+sum(SLPsww))
 
 
 
 """INPUTS VAN DE GEBRUIKER"""
-"""voorzieningen"""  #dit moet een input worden van de gebruiker
+"""voorzieningen""" 
+ #dit moet een input worden van de gebruiker
 huidigeVoorzieningSWW = cvKetel_gas_25
 huidigeVoorzieningRV = cvKetel_gas_25
 huidigeVoorzieningElec = electriciteit_net
 huidigeVoorzieningen = [huidigeVoorzieningRV,huidigeVoorzieningSWW,huidigeVoorzieningElec]
+
 """huidige energieverbruik""" #dit moet een input worden van de gebruiker
 Jaarverbruik_stookolie = 0 #kWh
 Jaarverbruik_gas = 20000 #kWh
@@ -141,12 +238,14 @@ Jaarverbruik_elec = 3500 #kWh
 
 
 
-"""INPUTS VAN DE GEBRUIKER VERWERKEN"""
-"""huidig verbruik verdelen over verbruikprofiel -> verbruikprofiel genereren"""
-def verbruikProfiel(voorziening, profiel):  #functie vermenigvuldigt elk percentage per kwartier van de slpo met het overeenkomstige  totaal jaarverbruik 
-    if voorziening.get("verbruiker") =="elektriciteit":
+"""
+INPUTS VAN DE GEBRUIKER VERWERKEN
+"""
+"""huidig verbruik verdelen over procentueel verbruikprofiel -> verbruikprofiel genereren"""
+def verbruikProfiel(voorziening, profiel):  #functie vermenigvuldigt elk percentage per kwartier van de slp met het overeenkomstige  totaal jaarverbruik 
+    if voorziening.get("verbruiker") =="electriciteit":
             jaarverbruik = Jaarverbruik_elec
-            verbruikersVraag = [i*jaarverbruik for i in profiel]        
+            verbruikersVraag = [i*jaarverbruik for i in profiel] #delen door 0.25 op kWkwartier op te zetten naar kW, kWkwartier opmdat er per kwartier vermenigvuldigt wordt met het totaal. 
     elif voorziening.get("verbruiker") =="aardgas":
             jaarverbruik = Jaarverbruik_gas
             verbruikersVraag = [i*jaarverbruik for i in profiel]           
@@ -157,10 +256,10 @@ def verbruikProfiel(voorziening, profiel):  #functie vermenigvuldigt elk percent
     return verbruikersVraag
 
 
-def verbruikersSom(voorziening, som): #functie verdeelt het verbruik over alle gedefinieerde verbruikers (gas, stookolie, elec), maakt het vergelijken voor besparingen achteraf gemakkelijker
-    verbruikers = {"aardgas":0.0,"stookolie":0.0,"elektriciteit":0.0}
-    if voorziening.get("verbruiker") =="elektriciteit":
-        verbruikers["elektriciteit"] = verbruikers.get("elektriciteit") + som
+def verbruikersSom(voorziening, som): #functie verdeelt het totaalverbruik van een bepaalde voorziening over alle gedefinieerde verbruikers (gas, stookolie, elec), maakt vergelijken later gemakkelijker
+    verbruikers = {"aardgas":0.0,"stookolie":0.0,"electriciteit":0.0}
+    if voorziening.get("verbruiker") =="electriciteit":
+        verbruikers["electriciteit"] = verbruikers.get("electriciteit") + som
     elif voorziening.get("verbruiker") =="aardgas":
         verbruikers["aardgas"] = verbruikers.get("aardgas") + som
     elif voorziening.get("verbruiker") =="stookolie":
@@ -169,7 +268,9 @@ def verbruikersSom(voorziening, som): #functie verdeelt het verbruik over alle g
     return verbruikers
 
 
-"""CO2 uitstoot"""
+"""
+CO2 uitstoot
+"""
 #https://www.energids.be/nl/vraag-antwoord/wat-houdt-een-ton-co2-precies-in/2141/
 co2_gas = 0.206 #kg/kWh
 co2_elec = 0.220 #kg/kWh
@@ -177,7 +278,7 @@ co2_stookolie = 0.271 #kg/kWh
 
 
 def emissions(verbruiker, verbruik):  #returns kg co2/kwh voor een bepaalde verbruiker
-    if verbruiker == "elektriciteit":
+    if verbruiker == "electriciteit":
             co2 = round(verbruik * co2_elec,3)
     elif verbruiker == "aardgas":
             co2 = round(verbruik * co2_gas,3)
@@ -187,8 +288,13 @@ def emissions(verbruiker, verbruik):  #returns kg co2/kwh voor een bepaalde verb
     return co2
 
 
-
-"""energievraag bepalen""" #energievraag of nuttige energie bepalen op basis van huidige efficientie
+"""
+FUNCTIES OVER VERBRUIK
+"""
+"""
+energievraag bepalen
+""" 
+#energievraag of nuttige energie van huidige voorzieningen bepalen op basis van huidige efficientie
 
 def energieVraag(huidigeVoorziening,huidigVraagProfiel):
     if type (huidigeVoorziening.get("efficientie")) == list: #if functie is nodig om te bepalen of de efficientie tijdsafhankelijke is of niet, tijdsafhankelijk staat in een list, niet-afhankelijk is gwn een integer
@@ -196,9 +302,8 @@ def energieVraag(huidigeVoorziening,huidigVraagProfiel):
     else:
         vraag = [i*huidigeVoorziening.get("efficientie") for i in huidigVraagProfiel]
     return vraag
-
-"""nieuw verbruik bepalen""" #nieuw verbruik voor nieuwe situatie
-
+ 
+#nieuw verbruik voor nieuwe voorziening op basis van het vraagprofiel
 def newConsumption(vraagprofiel,nieuweVoorziening):   #op basis van de energievraag en een nieuwe efficientie het nieuwe verbruik berekenen
     if type (nieuweVoorziening.get("efficientie")) == list:  #voorbeeld een variable COP staat in een tijdafhankelijke lijst geschreven, elk verbruik
         newCons = [a/b for a,b in zip(vraagprofiel,nieuweVoorziening.get("efficientie"))]
@@ -206,21 +311,24 @@ def newConsumption(vraagprofiel,nieuweVoorziening):   #op basis van de energievr
         newCons = [i/nieuweVoorziening.get("efficientie") for i in vraagprofiel]
     return newCons
 
-def newConsumptionPV(verbruikprofiel, PV_opbrengst):  #PV opbrengst aftrekken van huidig verbruik voor electriciteit, per kwartier
-    newCons = [None]*len(verbruikprofiel)
-    for i in range(len(verbruikprofiel)):
-        newCons[i] = (round(verbruikprofiel[i] - PV_opbrengst[i],3)) 
+#nieuw electriciteitsverbruik met PV
+def newConsumptionPV(elecVerbruik, PV_opbrengst):  #PV opbrengst aftrekken van huidig verbruik voor electriciteit, per kwartier
+    # newCons = [None]*len(verbruikprofiel)
+    # for i in range(len(verbruikprofiel)):
+    #     newCons[i] = (round(verbruikprofiel[i] - PV_opbrengst[i],3)) 
+    newCons = elecVerbruik - PV_opbrengst
     return newCons
 
+#verglijking maken tussen de verbruikers van een bepaalde voorziening
 def verbruikvergelijking(dict1, dict2):  #2 dictionaries van verbruikers vergelijken met elkaar, gebruikt om nieuw verbruik te vergelijken met huidig verbruik. Geeft duidelijk weer waar er een besparing is en waar een extra/nieuw verbruik is
-    besparingsdict= {"aardgas":0.0,"stookolie":0.0,"elektriciteit":0.0}
+    besparingsdict= {"aardgas":0.0,"stookolie":0.0,"electriciteit":0.0}
     besparingsdict['aardgas'] = round(dict1.get("aardgas") - dict2.get("aardgas"),3)
-    besparingsdict['elektriciteit'] = round(dict1.get("elektriciteit") - dict2.get("elektriciteit"),3)
+    besparingsdict['electriciteit'] = round(dict1.get("electriciteit") - dict2.get("electriciteit"),3)
     besparingsdict['stookolie'] = round(dict1.get("stookolie") - dict2.get("stookolie"),3)
     return besparingsdict
   
  #primaire energie berekenen 
-#input is een dictionary van verbruikers met een overeenkomstige verbruiks waarde ex {"gas":100}   
+#input is een item van een dictionary met een verbruiker en een verbruikswaarde eg {"gas":100}   
 def primaryEnergy(dictionary): 
     #https://www.vlaanderen.be/epb-pedia/rekenmethode/rekenmethode-e-peil/karakteristiek-jaarlijks-primair-energieverbruik
     mulFactorGas = 1
@@ -228,7 +336,7 @@ def primaryEnergy(dictionary):
     mulFactorStookolie = 1
     primE = 0
     for key, value in dictionary.items():
-        if key == "elektriciteit":
+        if key == "electriciteit":
                 primE += round(value * mulFactorElec,3)
         elif key == "aardgas":
                 primE += round(value * mulFactorGas,3)
@@ -241,7 +349,7 @@ def primaryEnergy(dictionary):
 #https://code.activestate.com/recipes/576686-npv-irr-payback-analysis/
 #momenteel een vaste waarde per kWh, dit variabel maken is mogelijk maar dan moeten we ook per kwartier een lijst inlezen, en aanpassen in de functies dat het elk overeenkomstig kwartier moet vermenigvuldigen 
 costElec = 0.5 #€/kWh   
-costAardgas = 0.4 #€/kWh
+costAardgas = 0.2 #€/kWh
 costStookolie = 0.3 #€/kWh
 
 #returns verbruikskost per jaar afhahnkelijk van welke verbruiker
@@ -249,7 +357,7 @@ costStookolie = 0.3 #€/kWh
 def usageCostYear(voorziening, verbruik):  
     verbruiker = voorziening.get('verbruiker')
     cost = 0
-    if verbruiker == "elektriciteit":
+    if verbruiker == "electriciteit":
             cost = verbruik * costElec
     elif verbruiker == "aardgas":
             cost = verbruik * costAardgas
@@ -258,22 +366,23 @@ def usageCostYear(voorziening, verbruik):
     return cost
 
 #returns verbruikskost per jaar afhahnkelijk van welke verbruiker 
-#input is een dictionary {'verbruiker':IntVerbruik}
+#input is een item van een dictionary {'verbruiker':IntVerbruik}
 def usageCostTotal(verbruik): 
     cost = 0
     for key, val in verbruik.items():
-            if key == "elektriciteit":
+            if key == "electriciteit":
                 cost += val * costElec
             elif key == "aardgas":
                 cost += val * costAardgas
             elif key == "stookolie":
                 cost += val * costStookolie
     return cost
+
 #returns verbruikskost per jaar afhahnkelijk van welke verbruiker 
 #input is een item van een dictionary over verbruik
 def usageCostItem(key,value):
     cost = 0
-    if key == "elektriciteit":
+    if key == "electriciteit":
         cost += round(value * costElec,2)
     elif key == "aardgas":
         cost += round(value * costAardgas,2)
@@ -281,7 +390,7 @@ def usageCostItem(key,value):
         cost += round(value * costStookolie,2)
     return cost
 
-"""dictionary van huidig verbruiksprofiel maken"""
+
 
 
 def cashflows(oudverbruik, nieuwverbruik,investering):  #de cashflow per jaar berekenen, periode is het aantal jaar. Eerste waarde is het jaar 0 = de investering
@@ -347,63 +456,21 @@ def payback(cashflows): #functie om de payback periode op te roepen
                 
        
         
-"""Nieuwe voorzieningen bepalen & dimensioneren"""
-"""dimensionering van de vraag"""
 
-"""nieuwe energievoorzieningen RUIMTEVERWARMING bepalen"""
-def dimensionering(voorziening,vraag):  #input is welke soort voorziening in dit scenario gebruik worden
 
-    newvoorziening = {}
-    if voorziening  == "warmtepomp_LW":
-            if vraag <= 3.3:  
-                newvoorziening = warmtepomp_LW[0]
-            elif vraag > 3.3 and vraag <= 4.6:
-                newvoorziening = warmtepomp_LW[1]
-            elif vraag > 4.6 and vraag <= 8.5:
-                newvoorziening = warmtepomp_LW[2]
-            elif vraag > 8.5:
-                newvoorziening = warmtepomp_LW[3]
-            else:
-                print("LW vermogen not in range")
 
-    elif voorziening  == "warmtepomp GW":
-        for i in range(len(warmtepomp_GW)):
-            vermogen = warmtepomp_GW[i].get("maxVermogen")
-            if vraag/vermogen:  #hier nog waardes voor het ratio toevoegen
-                newvoorziening = warmtepomp_GW[i]
-    elif voorziening  == "warmtepomp LL":
-        for i in range(len(warmtepomp_LL)):
-            vermogen = warmtepomp_LL[i].get("maxVermogen")
-            if vraag/vermogen:  #hier nog waardes voor het ratio toevoegen
-                newvoorziening = warmtepomp_LL[i]
-    elif voorziening  == "condensatieketel":
-        if vraag <= 13:
-            newvoorziening = condensatieketels[0]
-        elif vraag > 13 and vraag <= 20:
-            newvoorziening = condensatieketels[1]
-        elif vraag > 20 and vraag <= 30:
-            newvoorziening = condensatieketels[2]
-        elif vraag > 30 and vraag <= 50:
-            newvoorziening = condensatieketels[3]
-        elif vraag > 50 and vraag <= 80:
-            newvoorziening = condensatieketels[4]
-        elif vraag > 80:
-            newvoorziening = condensatieketels[5]
-    
-    elif voorziening  == "doorstroomboiler elektrisch":
-        if vraag <= 5:
-            newvoorziening = doorstroomboilersE[0]
-        elif vraag > 5:
-            newvoorziening = doorstroomboilersE[1]
 
-    elif voorziening == "electriciteitsnet":
-        newvoorziening = electriciteit_net
+def dimensioneringPV(electriciteitsProductie, kost):
+    #https://apps.energiesparen.be/zonnekaart
+    electriciteitsProductie = electriciteitsProductie*0.85
+    kost = kost*1
+    return [electriciteitsProductie, kost]
 
-    return newvoorziening
 
-def investering(nieuwProf, huidigProf):
-    if huidigProf.get('voorziening') != nieuwProf.get('voorziening'):  #checken of huidige voorziening gelijk is aan de nieuwe, als dit zo is is er geen nieuw installatie --> dus ook geen investering. dit herhaalt voor elke toepassing, kan in een for loop geschreven worden
-        invest = nieuwProf.get('voorziening').get('prijs')
+
+def investering(listnieuwProf, listhuidigProf):
+    if listhuidigProf.get('voorziening') != listnieuwProf.get('voorziening'):
+        invest = listnieuwProf.get('voorziening').get('prijs')
     else:
         invest = 0
     return invest
@@ -411,11 +478,12 @@ def investering(nieuwProf, huidigProf):
 def nieuweVoorzieningen(scenario,maxVraagRV,maxVraagSWW):  #deze functie wordt doorlopen door alle scenarios die meegegeven worden en bepaalt daaruit welke de nieuwe voorzieningen worden die vergelekenn gaan worden met de huidige situatie
     warmtevraagRV =maxVraagRV
     warmtevraagSWW = maxVraagSWW
-    # print("warmtevraag RV", warmtevraagRV)
-    # print("warmtevraagSWW",warmtevraagSWW)
+    print("warmtevraag RV", warmtevraagRV)
+    print("warmtevraagSWW",warmtevraagSWW)
 
     if scenario.get("ruimteverwarming") == scenario.get("sanitair warm water"):
-        voorzieningRV = voorzieningSWW = dimensionering(scenario.get("ruimteverwarming"),warmtevraagRV + warmtevraagSWW)
+        voorzieningRV = dimensionering(scenario.get("ruimteverwarming"),warmtevraagRV + warmtevraagSWW)
+        voorzieningSWW = voorzieningRV
         voorzieningElec = dimensionering(scenario.get("electriciteit"),1)
     else:    
         voorzieningRV = dimensionering(scenario.get("ruimteverwarming"),warmtevraagRV)
@@ -426,7 +494,9 @@ def nieuweVoorzieningen(scenario,maxVraagRV,maxVraagSWW):  #deze functie wordt d
 
     return [nieuwevoorzieningen, voorzieningRV,voorzieningSWW,voorzieningElec]
 
-
+"""
+DICTIONARY VAN HUIDIG PROFIEL GENEREREN
+"""
 
 def huidigProfiel(huidVoor):
     huidigProfiel = {}
@@ -471,13 +541,17 @@ def huidigProfiel(huidVoor):
 
     return [huidigProfiel, huidigProfielRV,huidigProfielSWW,huidigProfielElec]
 
-
+"""
+DICTIONARY VAN NIEUW PROFIEL GENEREREN
+"""
 def nieuwProfiel(scenario, huidProf):
     nieuwProfiel = {}
-    selectie = nieuweVoorzieningen(scenario,max(huidProf[1].get('verbruikProfiel')),max(huidProf[2].get('verbruikProfiel'))) 
+    selectie = nieuweVoorzieningen(scenario,max(huidProf[1].get('verbruikProfiel'))*4,max(huidProf[2].get('verbruikProfiel'))*4)  #maal 4 om max(kWh) om te zetten naar kW 
+    print("max RV en max SWW", max(huidProf[1].get('verbruikProfiel')), max(huidProf[2].get('verbruikProfiel')))
     nieuwVoorzieningRV = selectie[1]
     nieuwVoorzieningSWW = selectie[2]
     nieuwVoorzieningElec = selectie[3]
+    PV = scenario.get('PV')
     nieuwProfielRV = {} 
     nieuwProfielSWW = {} 
     nieuwProfielElec = {}
@@ -500,14 +574,19 @@ def nieuwProfiel(scenario, huidProf):
     nieuwProfiel["electriciteit"] = nieuwProfielElec.get('voorziening').get('naam')
     nieuwProfiel["verbruik"] = {}
     nieuwProfiel["verbruikskost"] = {}
+    nieuwProfiel['investering PV'] = 0
     for i,j in nieuwProfielRV.get("verbruikersverdeling").items():
         for k,l in nieuwProfielSWW.get("verbruikersverdeling").items():
             for m,n in nieuwProfielElec.get('verbruikersverdeling').items():
                 if i == k == m:
                     nieuwProfiel['verbruik'][i] = j+l+n
     if PV == True:  #opbrengst van PV aftrekken van totaal verbruik electriciteit
-        newConsumptionPV(nieuwProfiel.get('verbruik').get('electriciteit'),PV_opbrengst)
-        PV_cost = 0
+        #https://apps.energiesparen.be/zonnekaart
+        PV_opbrengst = 3687 #kWh per jaar
+        PV_kost = 4500 #€
+        PV = dimensioneringPV(PV_opbrengst,PV_kost)
+        nieuwProfiel.get('verbruik')['electriciteit'] = newConsumptionPV(nieuwProfiel.get('verbruik').get('electriciteit'),PV[0])
+        nieuwProfiel['investering PV'] = PV[1]
 
     for i,j in nieuwProfiel.get("verbruik").items():
             nieuwProfiel["verbruikskost"][i] = usageCostItem(i,j)
@@ -524,18 +603,31 @@ def nieuwProfiel(scenario, huidProf):
 
     return [nieuwProfiel,nieuwProfielRV,nieuwProfielSWW,nieuwProfielElec]
 
+"""
+VERGELIJKING MAKEN TUSSEN DICT HUIDIG PROFIEL EN DICT NIEUW PROFIEL
+"""
 def profileComparison(huidProf, nieuwProf):
    vergelijking = {} 
    vergelijking['huidige voorziening RV/SWW/elec'] = [huidProf[0].get('ruimteverwarming'),huidProf[0].get('sanitair warm water'),huidProf[0].get('electriciteit')]
    vergelijking['nieuwe voorziening RV/SWW/elec']= [nieuwProf[0].get('ruimteverwarming'),nieuwProf[0].get('sanitair warm water'),nieuwProf[0].get('electriciteit')]
+   vergelijking['huidig verbruik'] = huidProf[0].get('verbruik')
    vergelijking["nieuw verbruik"] = nieuwProf[0].get('verbruik')
    vergelijking["besparing verbruik"] = verbruikvergelijking(huidProf[0].get('verbruik'),nieuwProf[0].get('verbruik'))
    vergelijking["besparing primaire energie"] = (round(1-(nieuwProf[0].get("primaire energie")/huidProf[0].get("primaire energie")),3))*100
    vergelijking["kostbesparing"] =verbruikvergelijking(huidProf[0].get('verbruikskost'),nieuwProf[0].get('verbruikskost'))
-   vergelijking['investering RV'] = investering(nieuwProf[1],huidProf[1])
-   vergelijking['investering SWW'] = investering(nieuwProf[2],huidProf[2])
-   vergelijking['investering Elec'] = investering(nieuwProf[3],huidProf[3])
-   vergelijking['investering'] = vergelijking.get('investering RV') + vergelijking.get('investering SWW') + vergelijking.get('investering Elec')
+
+   if nieuwProf[1].get('voorziening') == nieuwProf[2].get('voorziening'):
+        vergelijking['investering RV en SWW'] = investering(nieuwProf[1],huidProf[1])
+        vergelijking['investering RV'] = 0
+        vergelijking['investering SWW'] = 0
+        vergelijking['investering Elec'] = investering(nieuwProf[3],huidProf[3])
+   else:
+        vergelijking['investering RV en SWW'] = 0
+        vergelijking['investering RV'] = investering(nieuwProf[1],huidProf[1])
+        vergelijking['investering SWW'] = investering(nieuwProf[2],huidProf[2])
+        vergelijking['investering Elec'] = investering(nieuwProf[3],huidProf[3])
+   vergelijking['investering PV'] = nieuwProf[0].get('investering PV')
+   vergelijking['investering'] = vergelijking.get('investering RV') + vergelijking.get('investering SWW') + vergelijking.get('investering Elec') + vergelijking.get('investering RV en SWW') + vergelijking.get('investering PV')
    vergelijking['cashflow'] = cashflows(huidProf[0].get('verbruik'),nieuwProf[0].get('verbruik'),vergelijking.get('investering'))
    vergelijking['tvt jaar'] = payback(vergelijking.get('cashflow'))[0]
    vergelijking['tvt maand'] = payback(vergelijking.get('cashflow'))[1]
@@ -544,13 +636,18 @@ def profileComparison(huidProf, nieuwProf):
 
 
 
+"""
+ FINALE FUNCTIES OPROEPEN
+"""
+listVGL = []  #om alle vergelijkingen bij te houden
+newProfiel = []  #om alle nieuwe profielen bij te houden
+huidigProf = huidigProfiel(huidigeVoorzieningen)   #huidig profiel genereren
 
-listVGL = []
-
-huidigProf = huidigProfiel(huidigeVoorzieningen)
-def callComparison(listScenarios):
-    for i in range (len(listScenarios)):
+def callComparison(listScenarios):  
+    for i in range (len(listScenarios)): #elk scenario in de lijst  van scenarios doorlopen, een nieuw profiel maken en dit nieuw profiel vergelijken met het huidige profiel en de vergelijking opslaan in een list 
+        print("berekening nieuw profiel voor:",listScenarios[i].get('scenario'))
         nieuwProf = nieuwProfiel(listScenarios[i],huidigProf)
+        newProfiel.append(nieuwProf)
         # print(nieuwProf)
         vgl = profileComparison(huidigProf,nieuwProf)
         vgl['scenario'] = listScenarios[i].get('scenario')
@@ -558,7 +655,7 @@ def callComparison(listScenarios):
 
 
 # print(huidigProf)
-def printComparison(listComp):
+def printComparison(listComp): #functie om mooi te printen
     for dict in listComp:
         print("################################")
         print("VERGELIJKING MET:",dict.get('scenario'))
@@ -568,9 +665,9 @@ def printComparison(listComp):
 
  
 
-callComparison(scenarios)
-printComparison(listVGL)
-
+callComparison(scenarios)  #alle scnenarios in de lijst van scenarios vergelijken met huidige situatie en opslaan in lijst
+printComparison(listVGL)  #de lijst van vergelijkingen oproepen en printen
+# print(newProfiel[0])
     
 
 
