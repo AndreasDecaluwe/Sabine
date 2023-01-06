@@ -1,0 +1,108 @@
+dit is een document dat een overzicht biedt van nieuwe mogelijke energievoorziengen voor warmte en electriciteit bij u thuisVERGELIJKING MET:scenario 1huidige voorziening RV/SWW/elec['gasketel', 'gasketel', 'electriciteitsnet']
+nieuwe voorziening RV/SWW/elec['lucht-water Warmtepomp', 'doorstroomboiler', 'electriciteitsnet']
+huidig verbruik{'aardgas': 20000.160559999953, 'stookolie': 0.0, 'electriciteit': 3499.961881500007}
+nieuw verbruik{'aardgas': 0.0, 'stookolie': 0.0, 'electriciteit': 8471.302793499657}
+besparing verbruik{'aardgas': 20000.161, 'stookolie': 0.0, 'electriciteit': -4971.341}
+besparing primaire energie26.3
+kostbesparing{'aardgas': 6000.05, 'stookolie': 0.0, 'electriciteit': -994.27}
+investering RV en SWW0
+investering RV9385
+investering SWW200
+investering Elec0
+investering PV0
+investering9585
+cashflow[-9585, -4679.22, 1177.658, 8166.343, 16501.878, 26440.165, 38285.726, 52400.944, 69217.053, 89247.223, 113102.126, 141508.46, 175330.998, 215598.818, 263536.524, 320601.394, 388527.589, 469378.761, 565610.655, 680145.609]
+tvt jaar3
+tvt maand4
+CO2 besparing3026.338
+scenarioscenario 1
+VERGELIJKING MET:scenario 2huidige voorziening RV/SWW/elec['gasketel', 'gasketel', 'electriciteitsnet']
+nieuwe voorziening RV/SWW/elec['bodem-water Warmtepomp', 'doorstroomboiler', 'electriciteitsnet']
+huidig verbruik{'aardgas': 20000.160559999953, 'stookolie': 0.0, 'electriciteit': 3499.961881500007}
+nieuw verbruik{'aardgas': 0.0, 'stookolie': 0.0, 'electriciteit': 8555.905414226854}
+besparing verbruik{'aardgas': 20000.161, 'stookolie': 0.0, 'electriciteit': -5055.944}
+besparing primaire energie25.6
+kostbesparing{'aardgas': 6000.05, 'stookolie': 0.0, 'electriciteit': -1011.19}
+investering RV en SWW0
+investering RV8300
+investering SWW200
+investering Elec0
+investering PV0
+investering8500
+cashflow[-8500, -3611.141, 2225.602, 9190.326, 17497.347, 27401.702, 39206.885, 53274.053, 70032.983, 89995.109, 113769.039, 142079.016, 175786.889, 215918.258, 263693.587, 320565.228, 388261.481, 468839.022, 564745.296, 678892.762]
+tvt jaar3
+tvt maand0
+CO2 besparing3007.725
+scenarioscenario 2
+VERGELIJKING MET:scenario 3huidige voorziening RV/SWW/elec['gasketel', 'gasketel', 'electriciteitsnet']
+nieuwe voorziening RV/SWW/elec['water-water Warmtepomp', 'doorstroomboiler', 'electriciteitsnet']
+huidig verbruik{'aardgas': 20000.160559999953, 'stookolie': 0.0, 'electriciteit': 3499.961881500007}
+nieuw verbruik{'aardgas': 0.0, 'stookolie': 0.0, 'electriciteit': 8238.64558649952}
+besparing verbruik{'aardgas': 20000.161, 'stookolie': 0.0, 'electriciteit': -4738.684}
+besparing primaire energie28.4
+kostbesparing{'aardgas': 6000.05, 'stookolie': 0.0, 'electriciteit': -947.74}
+investering RV en SWW0
+investering RV9500
+investering SWW200
+investering Elec0
+investering PV0
+investering9700
+cashflow[-9700, -4747.689, 1164.562, 8219.14, 16633.088, 26664.686, 38621.288, 52868.644, 69841.998, 90059.289, 114136.865, 142808.181, 176946.047, 217589.108, 265973.35, 323569.598, 392128.133, 473731.79, 570859.142, 686459.691]
+tvt jaar3
+tvt maand4
+CO2 besparing3077.522
+scenarioscenario 3
+VERGELIJKING MET:scenario 4huidige voorziening RV/SWW/elec['gasketel', 'gasketel', 'electriciteitsnet']
+nieuwe voorziening RV/SWW/elec['lucht-water Warmtepomp', 'doorstroomboiler', 'electriciteitsnet']
+huidig verbruik{'aardgas': 20000.160559999953, 'stookolie': 0.0, 'electriciteit': 3499.961881500007}
+nieuw verbruik{'aardgas': 0.0, 'stookolie': 0.0, 'electriciteit': 8471.302793499657}
+besparing verbruik{'aardgas': 20000.161, 'stookolie': 0.0, 'electriciteit': -4971.341}
+besparing primaire energie26.3
+kostbesparing{'aardgas': 6000.05, 'stookolie': 0.0, 'electriciteit': -994.27}
+investering RV en SWW0
+investering RV9385
+investering SWW200
+investering Elec0
+investering PV0
+investering9585
+cashflow[-9585, -4679.22, 1177.658, 8166.343, 16501.878, 26440.165, 38285.726, 52400.944, 69217.053, 89247.223, 113102.126, 141508.46, 175330.998, 215598.818, 263536.524, 320601.394, 388527.589, 469378.761, 565610.655, 680145.609]
+tvt jaar3
+tvt maand4
+CO2 besparing3026.338
+scenarioscenario 4
+VERGELIJKING MET:scenario 6huidige voorziening RV/SWW/elec['gasketel', 'gasketel', 'electriciteitsnet']
+nieuwe voorziening RV/SWW/elec['lucht-water Warmtepomp', 'lucht-water Warmtepomp', 'electriciteitsnet']
+huidig verbruik{'aardgas': 20000.160559999953, 'stookolie': 0.0, 'electriciteit': 3499.961881500007}
+nieuw verbruik{'aardgas': 0.0, 'stookolie': 0.0, 'electriciteit': 4366.04399350031}
+besparing verbruik{'aardgas': 20000.161, 'stookolie': 0.0, 'electriciteit': -866.082}
+besparing primaire energie62.0
+kostbesparing{'aardgas': 6000.05, 'stookolie': 0.0, 'electriciteit': -173.22}
+investering RV en SWW9385
+investering RV0
+investering SWW0
+investering Elec0
+investering PV4500
+investering13885
+cashflow[-13885, -8158.168, -1324.238, 6827.138, 16546.276, 28131.05, 41935.931, 58382.74, 77973.442, 101305.378, 129089.382, 162171.346, 201557.884, 248446.864, 304263.75, 370704.844, 449788.746, 543917.589, 655949.913, 789287.378]
+tvt jaar3
+tvt maand12
+CO2 besparing3240.026
+scenarioscenario 6
+VERGELIJKING MET:scenario 7huidige voorziening RV/SWW/elec['gasketel', 'gasketel', 'electriciteitsnet']
+nieuwe voorziening RV/SWW/elec['condensatieketel', 'condensatieketel', 'electriciteitsnet']
+huidig verbruik{'aardgas': 20000.160559999953, 'stookolie': 0.0, 'electriciteit': 3499.961881500007}
+nieuw verbruik{'aardgas': 18750.15052499973, 'stookolie': 0.0, 'electriciteit': 3499.961881500007}
+besparing verbruik{'aardgas': 1250.01, 'stookolie': 0.0, 'electriciteit': 0.0}
+besparing primaire energie4.3
+kostbesparing{'aardgas': 375.0, 'stookolie': 0.0, 'electriciteit': 0.0}
+investering RV en SWW1835
+investering RV0
+investering SWW0
+investering Elec0
+investering PV0
+investering1835
+cashflow[-1835, -1559.997, -1213.743, -782.701, -250.761, 401.247, 1196.137, 2161.056, 3328.309, 4736.341, 6430.899, 8466.423, 10907.696, 13831.811, 17330.508, 21512.957, 26509.071, 32473.447, 39590.055, 48077.818]
+tvt jaar7
+tvt maand7
+CO2 besparing257.502
+scenarioscenario 7
